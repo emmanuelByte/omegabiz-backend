@@ -76,5 +76,9 @@ authRoutes.put(
   validateBody,
   AuthController.changeUserRole
 );
+authRoutes.post('/addCourse/:courseId', AuthController.addCourseToUser);
+authRoutes.post('/removeCourse/:courseId', AuthController.removeCourseFromUser);
+authRoutes.get('/courses', AuthController.getAllCourses);
+authRoutes.post('/payForCourse/:courseId', AuthController.payForCourse);
 
 export default authRoutes;

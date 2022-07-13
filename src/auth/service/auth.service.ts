@@ -10,6 +10,8 @@ import User from '../models/auth.model';
 import { IUser } from '../models/auth.model';
 import { generateToken } from '../middleware/auth.middlerware';
 import payload from '../types/Payload';
+import Course from '../../courses/models/Course';
+import Mongoose from 'mongoose';
 
 export class AuthService {
   static async register(req: Request, res: Response) {
@@ -184,6 +186,150 @@ export class AuthService {
       user.role = role || user.role;
       await user.save();
       res.status(HttpStatusCodes.OK).json(user);
+    } catch (error) {
+      console.error(error.message);
+      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send('Server Error');
+    }
+  }
+  static async addCourse(req: AuthRequest, res: Response) {
+    try {
+      const { courseId } = req.params;
+      if (!courseId)
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({
+          errors: [{ msg: 'Course id is required' }],
+        });
+
+      const course = await Course.findById(courseId);
+      if (!course)
+        return res.status(HttpStatusCodes.NOT_FOUND).json({
+          errors: [{ msg: 'Course not found' }],
+        });
+
+      let user = await User.findById(req.userId);
+      if (user && user.enrolledCourses) {
+        for (let i = 0; i < user.enrolledCourses.length; i++) {
+          if (
+            courseId.includes(
+              user.enrolledCourses[i]?.courseId?.toString() || ''
+            )
+          ) {
+            return res.status(HttpStatusCodes.BAD_REQUEST).json({
+              errors: [{ msg: 'Course already added' }],
+            });
+          }
+        }
+      }
+
+      if (!user) {
+        return res.status(HttpStatusCodes.NOT_FOUND).json({
+          errors: [{ msg: 'User not found' }],
+        });
+      }
+      user.enrolledCourses.push({ courseId: courseId });
+      await user.save();
+      res.status(HttpStatusCodes.OK).json(user);
+    } catch (error) {
+      console.error(error.message);
+      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send('Server Error');
+    }
+  }
+  static async removeCourse(req: AuthRequest, res: Response) {
+    try {
+      const { courseId } = req.params;
+      if (!courseId)
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({
+          errors: [{ msg: 'Course id is required' }],
+        });
+
+      const course = await Course.findById(courseId);
+      if (!course)
+        return res.status(HttpStatusCodes.NOT_FOUND).json({
+          errors: [{ msg: 'Course not found' }],
+        });
+
+      let user = await User.findById(req.userId);
+      if (!user) {
+        return res.status(HttpStatusCodes.NOT_FOUND).json({
+          errors: [{ msg: 'User not found' }],
+        });
+      }
+      let courses = [];
+      for (let i = 0; i < user.enrolledCourses.length; i++) {
+        if (!courseId.includes(user.enrolledCourses[i]?.courseId?.toString())) {
+          courses.push(user.enrolledCourses[i]);
+        }
+      }
+      user.enrolledCourses = courses;
+      await user.save();
+      res.status(HttpStatusCodes.OK).json(user);
+    } catch (error) {
+      console.error(error.message);
+      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send('Server Error');
+    }
+  }
+  static async payCourse(req: AuthRequest, res: Response) {
+    try {
+      const { courseId } = req.params;
+      if (!courseId)
+        return res.status(HttpStatusCodes.BAD_REQUEST).json({
+          errors: [{ msg: 'Course id is required' }],
+        });
+
+      const course = await Course.findById(courseId);
+      if (!course)
+        return res.status(HttpStatusCodes.NOT_FOUND).json({
+          errors: [{ msg: 'Course not found' }],
+        });
+
+      let user = await User.findById(req.userId);
+      if (!user) {
+        return res.status(HttpStatusCodes.NOT_FOUND).json({
+          errors: [{ msg: 'User not found' }],
+        });
+      }
+      for (let i = 0; i < user.enrolledCourses.length; i++) {
+        if (courseId.includes(user.enrolledCourses[i]?.courseId?.toString()))
+          user.enrolledCourses[i].paid = true;
+      }
+      await user.save();
+      res.status(HttpStatusCodes.OK).json(user);
+    } catch (error) {
+      console.error(error.message);
+      res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send('Server Error');
+    }
+  }
+
+  static async getEnrolledCourses(req: AuthRequest, res: Response) {
+    try {
+      let user = await User.findById(req.userId);
+      if (!user) {
+        return res.status(HttpStatusCodes.NOT_FOUND).json({
+          errors: [{ msg: 'User not found' }],
+        });
+      }
+      // TODO add lookup aggregate to get course name
+      const userWithCourses = await User.aggregate([
+        {
+          $match: { _id: Mongoose.Types.ObjectId(req.userId) },
+        },
+        {
+          $lookup: {
+            from: 'courses',
+            localField: 'enrolledCourses.courseId',
+            foreignField: '_id',
+            as: 'enrolledCourses',
+          },
+        },
+
+        {
+          $replaceWith: {
+            _id: '$_id',
+
+            enrolledCourses: '$enrolledCourses',
+          },
+        },
+      ]);
+      res.status(HttpStatusCodes.OK).json(userWithCourses[0]);
     } catch (error) {
       console.error(error.message);
       res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send('Server Error');

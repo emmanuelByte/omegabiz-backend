@@ -40,5 +40,25 @@ class AuthController {
       await AuthService.changeUserRole(req, res);
     } catch (error) {}
   }
+  static async addCourseToUser(req: AuthRequest, res: Response) {
+    try {
+      await AuthService.addCourse(req, res);
+    } catch (error) {}
+  }
+  static async removeCourseFromUser(req: AuthRequest, res: Response) {
+    try {
+      await AuthService.removeCourse(req, res);
+    } catch (error) {}
+  }
+  static async getAllCourses(req: AuthRequest, res: Response) {
+    try {
+      await AuthService.getEnrolledCourses(req, res);
+    } catch (error) {}
+  }
+  static async payForCourse(req: AuthRequest, res: Response) {
+    try {
+      await AuthService.payCourse(req, res);
+    } catch (error) {}
+  }
 }
 export default AuthController;

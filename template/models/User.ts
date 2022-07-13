@@ -1,3 +1,4 @@
+import { ICourse } from './../../src/courses/models/Course';
 import { Document, Model, model, Schema } from 'mongoose';
 
 /**
@@ -10,6 +11,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   avatar: string;
+  enrolledCourses: ICourse[];
 }
 
 const userSchema = new Schema<IUser>({
@@ -29,6 +31,18 @@ const userSchema = new Schema<IUser>({
     type: Date,
     default: Date.now,
   },
+  enrolledCourses: [
+    {
+      id: {
+        type: Schema.Types.ObjectId,
+        ref: 'Course',
+      },
+      paid: {
+        type: Boolean,
+        default: false,
+      },
+    },
+  ],
 });
 
 const User = model<IUser>('User', userSchema);
