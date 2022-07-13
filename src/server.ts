@@ -31,7 +31,7 @@ app.get('/', (_req, res) => {
 });
 
 const port = app.get('port');
-if (process.env.NODE_ENV === 'development') list_endpoints(app);
+list_endpoints(app);
 const server = app.listen(port, () =>
   console.log(`Server started on port ${port}`)
 );
