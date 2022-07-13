@@ -66,7 +66,7 @@ export class AuthService {
       if (!user) {
         return res
           .status(HttpStatusCodes.NOT_FOUND)
-          .json({ errors: [{ msg: 'Email Not Found' }] });
+          .json({ errors: [{ msg: 'No user with this email' }] });
       }
 
       const isMatch = await comparePassword(password, user.password);
@@ -74,7 +74,7 @@ export class AuthService {
       if (!isMatch) {
         return res
           .status(HttpStatusCodes.UNAUTHORIZED)
-          .json({ errors: [{ msg: 'Password MisMatch' }] });
+          .json({ errors: [{ msg: 'Incorrect Password' }] });
       }
       const token = generateToken({ userId: user._id });
 
