@@ -1,0 +1,5 @@
+{
+  "mongoURI": "mongodb+srv://emanuelone:85740014@cluster0.ogcs0.gcp.mongodb.net/omegabiz_tech?retryWrites=true&w=majority",
+  "jwtSecret": "jwtSecretToken",
+  "jwtExpiration": "1d"
+}
