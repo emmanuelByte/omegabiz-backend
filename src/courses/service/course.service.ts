@@ -7,7 +7,8 @@ export default class CourseService {
     return res.status(200).json(courses);
   }
   static async getCourseById(req: Request, res: Response, next: NextFunction) {
-    const course = await Course.findOne({ id: req.params.courseId });
+    console.log(req.params);
+    const course = await Course.findOne({ id: req.params.id });
     return res.status(200).json(course);
   }
   static async createCourse(req: Request, res: Response, next: NextFunction) {
@@ -17,7 +18,7 @@ export default class CourseService {
   }
   static async updateCourse(req: Request, res: Response, next: NextFunction) {
     const course = await Course.findOneAndUpdate(
-      { id: req.params.courseId },
+      { id: req.params.id },
       req.body,
       {
         new: true,
@@ -27,7 +28,7 @@ export default class CourseService {
     return res.status(200).json(course);
   }
   static async deleteCourse(req: Request, res: Response, next: NextFunction) {
-    await Course.findOneAndDelete({ id: req.params.courseId });
+    await Course.findOneAndDelete({ id: req.params.id });
     return res.status(200).json({ message: 'Course deleted' });
   }
 }
