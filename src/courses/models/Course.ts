@@ -9,14 +9,20 @@ import { Document, Model, model, Schema } from 'mongoose';
  */
 export interface ICourse extends Document {
   name: string;
-  description: string;
-  students: IUser[];
+  id: string;
+  img: string;
   overview: string;
+  description: string;
   what_you_learn: string[];
   course_curriculum: string[];
-  prerequisites: string[];
   take_away: string[];
-  price: Array<string | number>;
+  prerequisites: string[];
+  price: {
+    currency: string;
+    price: number;
+    discount: number;
+    USD_NGN_RATE: number;
+  };
 }
 
 const courseSchema = new Schema<ICourse>(
@@ -29,10 +35,7 @@ const courseSchema = new Schema<ICourse>(
       type: String,
       required: true,
     },
-    price: {
-      type: String,
-      required: true,
-    },
+
     students: [
       {
         type: Schema.Types.ObjectId,
@@ -57,6 +60,15 @@ const courseSchema = new Schema<ICourse>(
     },
     take_away: {
       type: [String],
+      required: true,
+    },
+    price: {
+      type: {
+        currency: String,
+        price: Number,
+        discount: Number,
+        USD_NGN_RATE: Number,
+      },
       required: true,
     },
   },

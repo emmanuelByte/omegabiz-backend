@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import Course, { ICourse } from '../models/Course';
+import { courses } from './courses';
 
 export default class CourseService {
   static async getAllCourses(req: Request, res: Response, next: NextFunction) {
@@ -12,9 +13,14 @@ export default class CourseService {
     return res.status(200).json(course);
   }
   static async createCourse(req: Request, res: Response, next: NextFunction) {
-    const course = new Course(req.body);
-    await course.save();
-    return res.status(201).json(course);
+    const c: ICourse[] = courses.map((course) => {
+      const newCourse = new Course(course);
+      newCourse.save();
+      return newCourse;
+    });
+    // const course = new Course(req.body);
+    // await course.save();
+    return res.status(201).json(c);
   }
   static async updateCourse(req: Request, res: Response, next: NextFunction) {
     const course = await Course.findOneAndUpdate(

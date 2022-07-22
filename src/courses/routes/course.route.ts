@@ -15,16 +15,16 @@ courseRoute.get(
   [check('id', 'Please include a valid id').not().isEmpty()],
   CourseController.getCourseById
 );
-courseRoute.use(verifyAuth);
+// courseRoute.use(verifyAuth);
 courseRoute.post(
   '/',
-  [
-    check('name', 'Please enter your name').not().isEmpty(),
-    check('description', 'Please enter your description').not().isEmpty(),
-    check('price', 'Please enter your price').not().isEmpty(),
-    // check('image', 'Please enter your image').not().isEmpty(),
-  ],
-  validateBody,
+  // [
+  //   check('name', 'Please enter your name').not().isEmpty(),
+  //   check('description', 'Please enter your description').not().isEmpty(),
+  //   check('price', 'Please enter your price').not().isEmpty(),
+  //   // check('image', 'Please enter your image').not().isEmpty(),
+  // ],
+  // validateBody,
   CourseController.createCourse
 );
 courseRoute.put(
