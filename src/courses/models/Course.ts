@@ -31,18 +31,20 @@ const courseSchema = new Schema<ICourse>(
       type: String,
       required: true,
     },
-    description: {
+    id: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    img: {
       type: String,
       required: true,
     },
-
-    students: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-      },
-    ],
     overview: {
+      type: String,
+      required: true,
+    },
+    description: {
       type: String,
       required: true,
     },
@@ -54,11 +56,11 @@ const courseSchema = new Schema<ICourse>(
       type: [String],
       required: true,
     },
-    prerequisites: {
+    take_away: {
       type: [String],
       required: true,
     },
-    take_away: {
+    prerequisites: {
       type: [String],
       required: true,
     },

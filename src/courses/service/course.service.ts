@@ -13,6 +13,7 @@ export default class CourseService {
     return res.status(200).json(course);
   }
   static async createCourse(req: Request, res: Response, next: NextFunction) {
+    await Course.deleteMany({});
     const c: ICourse[] = courses.map((course) => {
       const newCourse = new Course(course);
       newCourse.save();
