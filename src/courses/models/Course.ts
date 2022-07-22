@@ -10,13 +10,13 @@ import { Document, Model, model, Schema } from 'mongoose';
 export interface ICourse extends Document {
   name: string;
   description: string;
-  price: string;
   students: IUser[];
   overview: string;
   what_you_learn: string[];
   course_curriculum: string[];
   prerequisites: string[];
   take_away: string[];
+  price: Array<string | number>;
 }
 
 const courseSchema = new Schema<ICourse>(
