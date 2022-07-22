@@ -7,7 +7,7 @@ export default class CourseService {
     return res.status(200).json(courses);
   }
   static async getCourseById(req: Request, res: Response, next: NextFunction) {
-    const course = await Course.findById(req.params.id);
+    const course = await Course.findOne({ id: req.params.courseId });
     return res.status(200).json(course);
   }
   static async createCourse(req: Request, res: Response, next: NextFunction) {
@@ -16,14 +16,18 @@ export default class CourseService {
     return res.status(201).json(course);
   }
   static async updateCourse(req: Request, res: Response, next: NextFunction) {
-    const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const course = await Course.findOneAndUpdate(
+      { id: req.params.courseId },
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     return res.status(200).json(course);
   }
   static async deleteCourse(req: Request, res: Response, next: NextFunction) {
-    await Course.findByIdAndDelete(req.params.id);
+    await Course.findOneAndDelete({ id: req.params.courseId });
     return res.status(200).json({ message: 'Course deleted' });
   }
 }

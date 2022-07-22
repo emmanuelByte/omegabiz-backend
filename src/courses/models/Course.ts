@@ -12,6 +12,11 @@ export interface ICourse extends Document {
   description: string;
   price: string;
   students: IUser[];
+  overview: string;
+  what_you_learn: string[];
+  course_curriculum: string[];
+  prerequisites: string[];
+  take_away: string[];
 }
 
 const courseSchema = new Schema<ICourse>(
@@ -22,6 +27,7 @@ const courseSchema = new Schema<ICourse>(
     },
     description: {
       type: String,
+      required: true,
     },
     price: {
       type: String,
@@ -33,6 +39,26 @@ const courseSchema = new Schema<ICourse>(
         ref: 'User',
       },
     ],
+    overview: {
+      type: String,
+      required: true,
+    },
+    what_you_learn: {
+      type: [String],
+      required: true,
+    },
+    course_curriculum: {
+      type: [String],
+      required: true,
+    },
+    prerequisites: {
+      type: [String],
+      required: true,
+    },
+    take_away: {
+      type: [String],
+      required: true,
+    },
   },
   {
     timestamps: true,
